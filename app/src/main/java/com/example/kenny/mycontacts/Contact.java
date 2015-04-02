@@ -1,9 +1,11 @@
 package com.example.kenny.mycontacts;
 
+import java.io.Serializable;
+
 /**
  * Created by Kenny on 15-03-31.
  */
-public class Contact {
+public class Contact implements Serializable {
 
     private String mName;
 
