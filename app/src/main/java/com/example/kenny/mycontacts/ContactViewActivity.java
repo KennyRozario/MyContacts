@@ -1,8 +1,11 @@
 package com.example.kenny.mycontacts;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.view.Display;
 import android.view.Menu;
@@ -19,11 +22,13 @@ import android.widget.TextView;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 
 
 public class ContactViewActivity extends ActionBarActivity {
 
     public static final String EXTRA = "CVA_Contact";
+    private int mColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,11 @@ public class ContactViewActivity extends ActionBarActivity {
 
         ListView listView = (ListView) findViewById(R.id.contact_view_fields);
         listView.setAdapter(new FieldsAdapter(contact.phoneNumbers, contact.emails));
+
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.mkbhd);
+        Palette palette = Palette.generate(bitmap);
+        mColor = palette.getDarkVibrantSwatch().getRgb();
+
     }
 
     private class FieldsAdapter extends BaseAdapter{
@@ -96,6 +106,8 @@ public class ContactViewActivity extends ActionBarActivity {
                     iv.setImageResource(R.drawable.ic_call);
                 }
             }
+
+            iv.setColorFilter(mColor);
 
             return convertView;
         }
