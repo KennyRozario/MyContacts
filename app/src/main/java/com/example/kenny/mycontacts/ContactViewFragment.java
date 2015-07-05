@@ -31,6 +31,8 @@ import java.util.ArrayList;
  */
 public class ContactViewFragment extends Fragment {
 
+    public static final String EXTRA = "CVA_Contact";
+
     private int mColor;
     private Contact mContact;
     private int mPosition;
@@ -48,7 +50,7 @@ public class ContactViewFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_contact_view, container, false);
 
-        mPosition = getIntent().getIntExtra(EXTRA, 0);
+        mPosition = getArguments().getInt(EXTRA, 0);
         mContact = ContactList.getInstance().get(mPosition);
         mContactName = (TextView) v.findViewById(R.id.contact_view_name);
         mContactName.setText(mContact.getName());

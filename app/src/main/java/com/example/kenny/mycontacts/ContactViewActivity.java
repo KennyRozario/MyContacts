@@ -25,6 +25,21 @@ import java.util.ArrayList;
 
 public class ContactViewActivity extends ActionBarActivity {
 
-    public static final String EXTRA = "CVA_Contact";
+    public static final String EXTRA = ContactViewFragment.EXTRA;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_contact_view);
+
+        if (getFragmentManager().findFragmentById(R.id.view_fragment_container) == null){
+            ContactViewFragment cvf = new ContactViewFragment();
+            cvf.setArguments(getIntent().getExtras());
+            getFragmentManager().beginTransaction()
+                    .add(R.id.view_fragment_container, cvf)
+                    .commit();
+        }
+
+    }
 
 }
