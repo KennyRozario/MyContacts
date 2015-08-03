@@ -1,6 +1,7 @@
 package com.example.kenny.mycontacts;
 
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,9 +30,7 @@ import java.util.ArrayList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ContactViewFragment extends Fragment {
-
-    public static final String EXTRA = "CVA_Contact";
+public class ContactViewFragment extends ContractFragment<ContactViewFragment.Contract> {
 
     private int mColor;
     private Contact mContact;
@@ -43,6 +42,14 @@ public class ContactViewFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public void setPosition(int position) {
+        mPosition = position;
+        if (mAdapter != null){
+            mContact = ContactList.getInstance().get(mPosition);
+            mAdapter.setContact(mContact );
+            updateUI();
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +57,6 @@ public class ContactViewFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_contact_view, container, false);
 
-        mPosition = getArguments().getInt(EXTRA, 0);
         mContact = ContactList.getInstance().get(mPosition);
         mContactName = (TextView) v.findViewById(R.id.contact_view_name);
         mContactName.setText(mContact.getName());
@@ -61,9 +67,8 @@ public class ContactViewFragment extends Fragment {
             public boolean onMenuItemClick(MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 if (id == R.id.contact_view_edit){
-                    Intent i = new Intent(getActivity(), ContactEditActivity.class);
-                    i.putExtra (ContactEditActivity.EXTRA, mPosition);
-                    startActivity(i);
+                    getContract() .selectEditPosition(mPosition);
+
                     return true;
                 }
                 return false;
@@ -73,7 +78,7 @@ public class ContactViewFragment extends Fragment {
         toolbar.inflateMenu(R.menu.menu_contact_view);
 
         ListView listView = (ListView) v.findViewById(R.id.contact_view_fields);
-        mAdapter = new FieldsAdapter(mContact.phoneNumbers, mContact.emails);
+        mAdapter = new FieldsAdapter(mContact);
         listView.setAdapter(mAdapter);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.mkbhd);
@@ -95,9 +100,13 @@ public class ContactViewFragment extends Fragment {
         ArrayList<String> phoneNumbers;
         ArrayList<String> emails;
 
-        FieldsAdapter (ArrayList<String> phoneNumbers, ArrayList<String> emails){
-            this.phoneNumbers = phoneNumbers;
-            this.emails = emails;
+        FieldsAdapter (Contact contact ){
+            this.setContact(contact);
+        }
+
+        public void setContact (Contact contact){
+            this.phoneNumbers = contact.phoneNumbers;
+            this.emails = contact.emails;
         }
 
         @Override
@@ -189,5 +198,8 @@ public class ContactViewFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    public interface Contract{
+        public void selectEditPosition (int position);
+    }
 
 }
